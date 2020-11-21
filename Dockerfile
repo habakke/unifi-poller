@@ -21,7 +21,6 @@ FROM busybox:musl AS bin
 COPY --from=build /src/unifi-poller .
 COPY --from=build /etc/ssl /etc/ssl
 COPY --from=build /usr/share/zoneinfo /usr/share/zoneinfo
-RUN mkdir -p /etc/unifi-poller
 
 ENV TZ=UTC
 
