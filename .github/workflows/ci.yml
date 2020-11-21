@@ -1,0 +1,57 @@
+name: Continuous Integration
+
+on:
+  push:
+    branches: [master]
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      DOCKER_BUILDKIT: "1"
+    steps:
+      - name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: |
+          echo "$GITHUB_CONTEXT"
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 2
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+        with:
+          buildkitd-flags: --debug
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Run unit-tests and code coverage
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          target: unit-test-coverage
+          file: ./Dockerfile
+          push: false
+      - name: Build and push Docker images
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          target: build
+          file: ./Dockerfile
+          platforms: |
+            linux/386
+            linux/amd64
+            linux/arm/v6
+            linux/arm/v7
+            linux/arm64
+          push: true
+          tags: |
+            habakke/unifi-poller:latest
+            habakke/unifi-poller:${{ github.sha }}
+            habakke/unifi-poller:2.0.1
