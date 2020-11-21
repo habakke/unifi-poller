@@ -5,7 +5,7 @@ WORKDIR /src
 ENV CGO_ENABLED=0
 
 # Install Dependencies
-RUN apk add --no-cache make git
+RUN apk add --no-cache make git bash
 
 # Download 3rd party source code
 RUN git clone -b 'v2.0.1' --single-branch --depth 1 https://github.com/unifi-poller/unifi-poller.git .
@@ -15,7 +15,7 @@ RUN --mount=type=cache,target=/go/pkg/mod \
 FROM base AS build
 RUN --mount=type=cache,target=/go/pkg/mod \
     --mount=type=cache,target=/root/.cache/go-build \
-    BINARY=unifi-poller make
+    make
 
 FROM busybox:musl AS bin
 COPY --from=build /src/unifi-poller .
