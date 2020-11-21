@@ -15,7 +15,7 @@ RUN --mount=type=cache,target=/go/pkg/mod \
 FROM base AS build
 RUN --mount=type=cache,target=/go/pkg/mod \
     --mount=type=cache,target=/root/.cache/go-build \
-    make
+    make && ls -la /src
 
 FROM busybox:musl AS bin
 COPY --from=build /src/unifi-poller .
