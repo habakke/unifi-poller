@@ -31,13 +31,6 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: Run unit-tests and code coverage
-        uses: docker/build-push-action@v2
-        with:
-          context: .
-          target: unit-test-coverage
-          file: ./Dockerfile
-          push: false
       - name: Build and push Docker images
         uses: docker/build-push-action@v2
         with:

@@ -1,7 +1,6 @@
-Unifi-poller docker
-============
+unifi-poller docker
+===================
 
-## About
 Repository for building custom docker image for unifi-poller.
 
 ## Reference
